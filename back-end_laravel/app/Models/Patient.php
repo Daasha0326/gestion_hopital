@@ -20,4 +20,7 @@ class Patient extends Model
     {
         return $this->hasMany(RendezVous::class);
     }
+    public function dossier_medical(){
+        return $this->belongsTo(DossierMedical::class);
+    }
 }
