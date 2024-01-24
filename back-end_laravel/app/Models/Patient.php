@@ -8,7 +8,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Patient extends Model
 {
-    use HasFactory,SoftDeletes;
+    use HasFactory, SoftDeletes;
+
+    protected $guarded = [ 
+
+    ];
 
     protected $hidden = [
         'created_at',
@@ -19,5 +23,15 @@ class Patient extends Model
     public function rendezVouse()
     {
         return $this->hasMany(RendezVous::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function consultations()
+    {
+        return $this->belongsTo(Consultation::class,'consultations');
     }
 }

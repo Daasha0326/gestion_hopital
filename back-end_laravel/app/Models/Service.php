@@ -10,9 +10,16 @@ class Service extends Model
 {
     use HasFactory,SoftDeletes;
 
+    protected $guarded = [ 
+        
+    ];
+
     protected $hidden = [
         'created_at',
         'updated_at',
         'deleted_at',
     ];
+    public function consultations() {
+        return $this->belongsTo(Consultation::class,'consultations');
+    }
 }

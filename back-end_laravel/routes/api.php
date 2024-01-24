@@ -37,3 +37,12 @@ Route::post('/ajout/user', [AdminController::class, 'store']);
 Route::get('/user/{id}', [AdminController::class, 'show']);
 Route::post('update/user', [AdminController::class, 'update']);
 Route::get('/delete/user', [AdminController::class, 'destroy']);
+
+
+
+// Patients
+Route::get('patient', [UserController::class, 'index']);
+Route::post('/ajout/patient', [UserController::class, 'ajouterInfoPatient']);
+Route::delete('patient/{patient}', [UserController::class, 'destroy']);
+Route::put('/patient/{patient}', [UserController::class, 'update']);
+

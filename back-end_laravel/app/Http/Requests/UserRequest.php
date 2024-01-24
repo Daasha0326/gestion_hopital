@@ -32,6 +32,7 @@ class UserRequest extends FormRequest
             "password"=>'required',
         ];
     }
+    
     public function failedValidation(Validator $validator){
         throw new HttpResponseException(response()->json([
             'success'=>false,
