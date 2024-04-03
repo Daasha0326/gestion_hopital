@@ -20,7 +20,9 @@ class PatientResource extends JsonResource
             "prenom"=>$this->prenom,
             "sexe"=>$this-> sexe,
             "age"=>$this->age,
-            "adresse"=>$this->adresse
+            "adresse"=>$this->adresse,
+            "telephone"=>$this->telephone,
+            "numeroDossier"=>$this->numeroDossier
         ];
     }
 }

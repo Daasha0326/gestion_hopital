@@ -1,0 +1,96 @@
+<div id="wrapper" class="flex h-screen bg-grey-lightest sm:flex-col md:flex-row font-light w-full">
+    <aside id="logo-sidebar"
+        class="  bg-white  top-0 left-0 z-40 w-[15%] h-screen transition-transform -translate-x-full sm:translate-x-0"
+        aria-label="Sidebar">
+        <div class="h-full px-3 py-4 overflow-y-auto ">
+            <a class="flex items-center  mb-5  justify-center">
+                
+                <span class="self-center text-[#7AA794] uppercase text-2xl font-extrabold">chnuf</span>
+            </a>
+            <ul class="space-y-2 mt-40 font-medium h-[50%] flex flex-col ">
+                <li class="cursor-pointer">
+                    <a 
+                        class="flex items-center p-2 text-gray-400 rounded-lg  hover:text-[#7AA794] group  hover:translate-x-2 transition-transform">
+                        <svg class="w-5 h-5 text-gray-400 transition duration-75  group-hover:text-[#7AA794] "
+                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path
+                                d="M22 12.999V20C22 20.5523 21.5523 21 21 21H13V12.999H22ZM11 12.999V21H3C2.44772 21 2 20.5523 2 20V12.999H11ZM11 3V10.999H2V4C2 3.44772 2.44772 3 3 3H11ZM21 3C21.5523 3 22 3.44772 22 4V10.999H13V3H21Z"
+                                fill="currentColor">
+                            </path>
+                        </svg>
+                        <span class=" flex-1 ml-3" (click)="getPatient()">Patients</span>
+                    </a>
+                </li>
+                <li class="cursor-pointer" >
+                    <a 
+                        class="flex items-center p-2 text-gray-400 rounded-lg hover:font-bold hover:text-[#7AA794] group  hover:translate-x-2 transition-transform">
+                        <svg class="w-5 h-5 text-gray-400 transition duration-75  group-hover:text-[#7AA794] "
+                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path
+                                d="M2 11H22V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V11ZM17 3H21C21.5523 3 22 3.44772 22 4V9H2V4C2 3.44772 2.44772 3 3 3H7V1H9V3H15V1H17V3Z"
+                                fill="currentColor"></path>
+                        </svg>
+                        <span class=" flex-1 ml-3" (click)="getConsultation()">Consultation</span>
+                    </a>
+                </li>
+                <li class="cursor-pointer" >
+                    <a 
+                        class="flex items-center p-2 text-gray-400 rounded-lg hover:font-bold hover:text-[#7AA794] group  hover:translate-x-2 transition-transform">
+                        <svg class="w-5 h-5 text-gray-400 transition duration-75  group-hover:text-[#7AA794] "
+                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path
+                                d="M2 11H22V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V11ZM17 3H21C21.5523 3 22 3.44772 22 4V9H2V4C2 3.44772 2.44772 3 3 3H7V1H9V3H15V1H17V3Z"
+                                fill="currentColor"></path>
+                        </svg>
+                        <span class=" flex-1 ml-3" >Urgences</span>
+                    </a>
+                </li>
+               
+                
+            </ul>
+
+            <ul class="space-y-2 w-64 pt-2 absolute bottom-10 border-t border-[#7AA794]">
+                <li>
+                    <a href="#"
+                        class="flex items-center p-2 text-gray-400 rounded-lg  hover:bg-white hover:text-white dark:hover:bg-[#7AA794] group  hover:translate-x-2 transition-transform">
+                        <svg class="w-5 h-5 text-blacj transition duration-75 dark:text-gray-400 group-hover:text-Azure dark:group-hover:text-white"
+                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path
+                                d="M5 11H13V13H5V16L0 12L5 8V11ZM3.99927 18H6.70835C8.11862 19.2447 9.97111 20 12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C9.97111 4 8.11862 4.75527 6.70835 6H3.99927C5.82368 3.57111 8.72836 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C8.72836 22 5.82368 20.4289 3.99927 18Z"
+                                fill="currentColor"></path>
+                        </svg>
+                        <span class="flex-1 ml-3 whitespace-nowrap">Déconnexion</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </aside>
+
+    <div class="w-[90%] h-full ">
+        <div class="w-full h-[7%]  flex justify-end" >
+            <div class="w-[150px]  h-full flex justify-between items-center px-4">
+                <div class="profile-user w-[50px] h-[50px] flex justify-center items-center bg-gray-300 rounded-full">
+
+                    <img class=" w-[60px] h-[55px]  rounded-full" src="assets/images/images.jpeg" alt="profile admin">
+
+                </div>
+                <span class="w-[50px] h-[50px] rounded-full flex justify-center items-center ">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                    </svg>
+
+                </span>
+            </div>
+        </div>
+
+        <div class="w-full h-auto overflow-x-hidden bg-black">
+            <!-- <router-outlet class=""></router-outlet> -->
+        </div>
+        <app-liste-patient *ngIf="display=='patient'" (ajoutPatient)="createPatient($event)" [patients]="patients" (dataSaved)="handleData($event)"></app-liste-patient>
+        <app-consultation *ngIf="display=='consultation'" [consultations]="consultations"></app-consultation>
+    </div>
+
+</div>

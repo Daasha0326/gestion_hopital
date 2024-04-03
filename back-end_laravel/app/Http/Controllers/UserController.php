@@ -2,20 +2,26 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Models\User;
+use App\Mail\Urgence;
 use App\Models\Patient;
+use App\Models\Service;
+use App\Jobs\Urgencesmail;
 use App\Models\RendezVous;
+use App\Models\Consultation;
 use Illuminate\Http\Request;
 use App\Models\DossierMedical;
+use Illuminate\Support\Carbon;
 use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use App\Http\Requests\PatientRequest;
+use App\Http\Resources\PatientResource;
 use App\Http\Requests\DossierMedicalRequest;
 use App\Http\Resources\ConsultationResource;
-use App\Models\Consultation;
-
 
 class UserController extends Controller
 {
@@ -63,6 +69,36 @@ class UserController extends Controller
     {
         return DB::transaction(function () use ($request) {
 
+            $patientExist = Patient::where('telephone', $request->telephone)->first();
+            //$idPatient = $patientExist->id;
+            $currentDate = now();
+
+            $numeroChoix = ($request->etat == 'consultation') ? 'numero' : 'numeroRV';
+
+            $lastConsultation = Consultation::whereDate('date', $currentDate)
+                ->orderByDesc($numeroChoix)
+                ->first();
+
+            $numero = $lastConsultation ? $lastConsultation->$numeroChoix + 1 : 1;
+            if ($patientExist) {
+                $consult = Consultation::create([
+
+                    // $request->consultations
+                    "patient_id" => $patientExist->id,
+                    "medecin_id" => $request->medecin_id,
+                    "service_id" => $request->service_id,
+                    $numeroChoix => $numero,
+                    "etat" => $request->etat,
+                    // "numero" => $numero,
+                    "date" => $currentDate,
+                ]);
+
+                return response()->json([
+                    'message' => 'success',
+                    'patient' => $patientExist
+                ]);
+            }
+
             $patient = Patient::create([
                 'nom' => $request->nom,
                 'prenom' => $request->prenom,
@@ -73,27 +109,25 @@ class UserController extends Controller
                 'numeroDossier' => $this->genererNumeroDossier($request->nom, $request->prenom, $request->telephone),
             ]);
 
-            $currentDate = now();
-
-            $lastConsultation = Consultation::whereDate('date', $currentDate)
-                ->orderByDesc('numero')
-                ->first();
-
-            $numero = $lastConsultation ? $lastConsultation->numero + 1 : 1;
-
             $consult = Consultation::create([
 
                 // $request->consultations
                 "patient_id" => $patient->id,
                 "medecin_id" => $request->medecin_id,
                 "service_id" => $request->service_id,
-                "numero" => $numero,
+                $numeroChoix => $numero,
+                "etat" => $request->etat,
+                // "numero" => $numero,
                 "date" => $currentDate,
             ]);
 
             return $patient;
 
-            return response()->json(['message' => 'success', 'patient' => $patient, 'consultation' => $consult]);
+            return response()->json([
+                'message' => 'success',
+                'patient' => $patient,
+                'consultation' => $consult
+            ]);
         });
     }
 
@@ -116,11 +150,55 @@ class UserController extends Controller
         return $numeroDossier;
     }
     /*____________________________________________________Fin enregistrement patient_________________________________________*/
+    public function trierPatientsParEtat($etat)
+    {
+
+        $consultations = Consultation::where('etat', $etat)->get();
+
+
+        $patients = $consultations->map(function ($consultation) {
+            return $consultation->patient;
+        });
+        return response()->json([
+            'message' => 'success',
+            'patient' => $patients,
+        ]);
+    }
+
+
+    public function lesConsultationDuPatient($idPatient)
+    {
+        $consultations = Consultation::where('patient_id', $idPatient)->get();
+        return ConsultationResource::collection($consultations);
+
+        // return response()->json([
+        //     'consultations' => $consultations,
+        // ]);
+    }
 
 
 
+    public function historiqueConsultationsParMois($mois, $annee)
+    {
+        $startOfMonth = Carbon::create($annee, $mois, 1)->startOfMonth();
+        $endOfMonth = $startOfMonth->copy()->endOfMonth();
+
+        $consultations = Consultation::whereBetween('date', [$startOfMonth, $endOfMonth])
+            ->orderBy('date')
+            ->get();
+
+        return ConsultationResource::collection($consultations);
+    }
 
 
+    public function getMedecinsByService($serviceId)
+    {
+        $medecins = User::where('role', 'medecin')
+            ->where('service_id', $serviceId)
+            ->get();
+
+        return response()->json($medecins);
+    }
     /*___________________________________________________Supprimer ou modifier un patient_____________________________________*/
 
     public function destroy(Patient $patient)
@@ -141,34 +219,34 @@ class UserController extends Controller
     }
 
     public function update(Request $request, $patient)
-{
-    $pat = Patient::find($patient);
+    {
+        $pat = Patient::find($patient);
 
-    $oldNom = $pat->nom;
-    $oldPrenom = $pat->prenom;
-    $oldTelephone = $pat->telephone;
+        $oldNom = $pat->nom;
+        $oldPrenom = $pat->prenom;
+        $oldTelephone = $pat->telephone;
 
-    $pat->update([
-        'nom' => $request->nom,
-        'prenom' => $request->prenom,
-        'sexe' => $request->sexe,
-        'age' => $request->age,
-        'adresse' => $request->adresse,
-        'numeroDossier' => $this->genererNumeroDossier($request->nom, $request->prenom, $request->telephone),
-    ]);
-
-    $nomModifie = $oldNom !== $request->nom;
-    $prenomModifie = $oldPrenom !== $request->prenom;
-    $telephoneModifie = $oldTelephone !== $request->telephone;
-
-    if ($nomModifie || $prenomModifie || $telephoneModifie) {
         $pat->update([
+            'nom' => $request->nom,
+            'prenom' => $request->prenom,
+            'sexe' => $request->sexe,
+            'age' => $request->age,
+            'adresse' => $request->adresse,
             'numeroDossier' => $this->genererNumeroDossier($request->nom, $request->prenom, $request->telephone),
         ]);
-    }
 
-    return response()->json(['message' => 'Les informations du patient ont été mises à jour avec succès', 'patient' => $pat]);
-}
+        $nomModifie = $oldNom !== $request->nom;
+        $prenomModifie = $oldPrenom !== $request->prenom;
+        $telephoneModifie = $oldTelephone !== $request->telephone;
+
+        if ($nomModifie || $prenomModifie || $telephoneModifie) {
+            $pat->update([
+                'numeroDossier' => $this->genererNumeroDossier($request->nom, $request->prenom, $request->telephone),
+            ]);
+        }
+
+        return response()->json(['message' => 'Les informations du patient ont été mises à jour avec succès', 'patient' => $pat]);
+    }
 
 
 
@@ -187,13 +265,16 @@ class UserController extends Controller
 
     /*____________________________________________________Enregistrement urgences_________________________________________*/
 
-    public function alerteUrgence(Request $request){
-        
+    public function envoieMailUrgence(Request $request)
+    {
+        $lieu = $request->lieu;
+        $heure = $request->heure;
+        $description = $request->description;
+        $photo = $request->photo;
+
+        Urgencesmail::dispatch($lieu, $heure, $description, $photo);
+        return response()->json(['message' => 'succes']);
     }
-
-
-
-
     /*____________________________________________________Fin enregistrement urgences_________________________________________*/
 
 
@@ -205,9 +286,57 @@ class UserController extends Controller
     {
         $all = Consultation::all();
         return response()->json([
-            "consultations" => ConsultationResource::collection($all)
+            "data" => ConsultationResource::collection($all)
         ]);
     }
+
+    public function allPatients()
+    {
+        $all = Patient::all();
+        return response()->json([
+            "data" => PatientResource::collection($all)
+        ]);
+    }
+
+    public function chargerSelect()
+    {
+        $service = Service::all();
+        $medecin = User::where('role', 'medecin')->get();
+
+
+        return response()->json([
+            "service_id" => $service,
+            "medecin_id" => $medecin,
+
+        ]);
+    }
+
+    // public function rechercherParNumeroDossier(Request $request)
+    // {
+    //     $numeroDossier = $request->numeroDossier;
+
+    //     $patient = Patient::where('numeroDossier', $numeroDossier)->first();
+
+    //     if ($patient) {
+    //         return response()->json([
+    //             'patient' => $patient,
+    //         ]);
+    //     } else {
+    //         return response()->json([
+    //             'message' => 'Patient non trouvé',
+    //         ], 404);
+    //     }
+    // }
+
+    public function getNumeroDossierBySearch($numDossier)
+    {
+
+        $search = Patient::where('numeroDossier', $numDossier)->first();
+        return response()->json([
+            'patient' => $search,
+        ]);
+    }
+
 
     /**
      * Show the form for creating a new resource.
@@ -250,5 +379,4 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    
 }

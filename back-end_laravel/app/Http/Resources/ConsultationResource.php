@@ -17,7 +17,9 @@ class ConsultationResource extends JsonResource
         return [
             "id" => $this->id,
             "numero" => $this->numero,
+            "numeroRV" => $this->numeroRV,
             "date" => $this->date,
+            "etat" => $this->etat,
             "patient" => new PatientResource($this->patient),
             "service" => new ServiceRessource($this->service),
             "medecin" => new MedecinResource($this->user),

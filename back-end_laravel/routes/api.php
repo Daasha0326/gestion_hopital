@@ -40,9 +40,26 @@ Route::get('/delete/user', [AdminController::class, 'destroy']);
 
 
 
-// Patients
-Route::get('patient', [UserController::class, 'index']);
+// Receptionniste
+Route::get('receptionniste/liste/consultation', [UserController::class, 'index']);
 Route::post('/ajout/patient', [UserController::class, 'ajouterInfoPatient']);
 Route::delete('patient/{patient}', [UserController::class, 'destroy']);
 Route::put('/patient/{patient}', [UserController::class, 'update']);
+Route::get('receptionniste/liste/patient', [UserController::class, 'allPatients']);
+Route::get('select', [UserController::class, 'chargerSelect']);
+
+Route::get('historique/{mois}/{annee}', [UserController::class, 'historiqueConsultationsParMois']);
+Route::get('receptionniste/search/numurodossier', [UserController::class, 'rechercherParNumeroDossier']);
+Route::get('receptionniste/search/{numDossier}', [UserController::class, 'getNumeroDossierBySearch']);
+Route::get('receptionniste/liste/consultations/patient/{idPatient}', [UserController::class, 'lesConsultationDuPatient']);
+
+
+//Médecins
+Route::get('medecin/{serviceId}', [UserController::class, 'getMedecinsByService']);
+
+
+
+//Urgences
+Route::post('urgencemail', [UserController::class, 'envoieMailUrgence']);
+Route::get('patient/{etat}', [UserController::class, 'trierPatientsParEtat']);
 
