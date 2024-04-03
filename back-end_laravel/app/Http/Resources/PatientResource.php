@@ -23,6 +23,13 @@ class PatientResource extends JsonResource
             "adresse"=>$this->adresse,
             "telephone"=>$this->telephone,
             "numeroDossier"=>$this->numeroDossier
+            "nom" => $this->nom,
+            "prenom"=> $this->prenom,
+            "adresse" => $this->adresse,
+            "telephone"=> $this->telephone,
+            "sexe" => $this->age,
+            "dossier_medical" => new DossierMedicalResource($this->dossier_medical),
+
         ];
     }
 }

@@ -33,5 +33,8 @@ class Patient extends Model
     public function consultations()
     {
         return $this->belongsTo(Consultation::class,'consultations');
+
+    public function dossier_medical(){
+        return $this->belongsTo(DossierMedical::class);
     }
 }

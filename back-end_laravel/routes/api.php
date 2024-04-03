@@ -23,9 +23,19 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::group(['middleware' => ['auth:sanctum']], function () {
-    Route::get('listePatient/user', [UserController::class, 'listePatient']);
-    Route::get('nbrePatient', [UserController::class, 'nbrePatientParJour']);
-    Route::post('createDossier', [UserController::class, 'createDossierMedical']);
+
+    //Route pour le medecin
+    Route::get('/medecin/liste/patients', [UserController::class, 'listePatient']);
+    Route::get('/medecin/nombre/patient', [UserController::class, 'nbrePatientParJour']);
+    Route::post('medecin/create/dossier', [UserController::class, 'createDossierMedical']);
+
+    //Routes pour l'administrateur
+    Route::get('/admin/liste/users', [AdminController::class, 'index']);
+    Route::post('/http://localhost:8000/api/admin/liste/userscreate/user', [AdminController::class, 'store']);
+    Route::get('/user/{id}', [AdminController::class, 'show']);
+    Route::put('/update/user/{id}', [AdminController::class, 'update']);
+    Route::delete('/delete/user/{id}', [AdminController::class, 'destroy']);
+    Route::post('/create/service', [AdminController::class, 'createService']);
 });
 
 

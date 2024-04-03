@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Http\Requests\DossierMedicalRequest;
+use App\Http\Requests\UserRequest;
+use App\Http\Resources\RendezVousResource;
+use App\Models\DossierMedical;
+use App\Models\RendezVous;
 use App\Models\User;
 use App\Mail\Urgence;
 use App\Models\Patient;
@@ -25,7 +29,6 @@ use App\Http\Resources\ConsultationResource;
 
 class UserController extends Controller
 {
-
     public function listePatient()
     {
         $today = date('Y-m-d');
@@ -33,7 +36,11 @@ class UserController extends Controller
             ->whereDate('dateRend', $today)
             ->orderBy('heureRend')
             ->get();
-        return $rendezVous;
+        return response()->json([
+            "data" => [
+                "patient" => RendezVousResource::collection($rendezVous)
+            ]
+        ]);
     }
 
     public function nbrePatientParJour()

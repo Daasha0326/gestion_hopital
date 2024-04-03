@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ServiceRequeste;
 use App\Http\Requests\UserRequest;
+use App\Models\Service;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -23,9 +25,16 @@ class AdminController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function createService(ServiceRequeste $request)
     {
-        //
+        $user = Service::create([
+            "nom" => $request
+        ]);
+        return response()->json([
+            "status" => 200,
+            "message" => "Isertion resuisie",
+            "user" => $user
+        ]);
     }
 
     /**
